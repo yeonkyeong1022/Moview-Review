@@ -31,13 +31,13 @@ public class UploadController {
     @Value("${org.zerock.upload.path}") // application.properties의 변수
     private String uploadPath;
     @PostMapping("/uploadAjax")
-    public void uploadFile(MultipartFile[] uploadFiles){
+    public ResponseEntity<List<UploadResultDTO>> uploadFile(MultipartFile[] uploadFiles){
 
         List<UploadResultDTO> resultDTOList = new ArrayList<>();
         for (MultipartFile uploadFile: uploadFiles) {
             if(uploadFile.getContentType().startsWith("image") == false) { //이미지파일만 업로드 가능
                 log.warn("this file is not image type");
-                return;
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 //실제 파일 이름 IE나 Edge는 전체 경로가 들어오므로
             String originalName = uploadFile.getOriginalFilename();
@@ -65,6 +65,7 @@ public class UploadController {
                 e.printStackTrace();
             }
         }//end for
+        return new ResponseEntity<>(resultDTOList, HttpStatus.OK);
     }
     private String makeFolder() {
         String str = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
