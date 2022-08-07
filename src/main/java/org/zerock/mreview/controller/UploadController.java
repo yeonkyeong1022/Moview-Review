@@ -1,6 +1,7 @@
 package org.zerock.mreview.controller;
 
 import lombok.extern.log4j.Log4j2;
+import net.coobird.thumbnailator.Thumbnailator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,13 +31,13 @@ public class UploadController {
     @Value("${org.zerock.upload.path}") // application.properties의 변수
     private String uploadPath;
     @PostMapping("/uploadAjax")
-    public void uploadFile(MultipartFile[] uploadFiles){
+    public ResponseEntity<List<UploadResultDTO>> uploadFile(MultipartFile[] uploadFiles){
 
         List<UploadResultDTO> resultDTOList = new ArrayList<>();
         for (MultipartFile uploadFile: uploadFiles) {
             if(uploadFile.getContentType().startsWith("image") == false) { //이미지파일만 업로드 가능
                 log.warn("this file is not image type");
-                return;
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 //실제 파일 이름 IE나 Edge는 전체 경로가 들어오므로
             String originalName = uploadFile.getOriginalFilename();
@@ -50,12 +51,21 @@ public class UploadController {
             String saveName = uploadPath + File.separator + folderPath + File.separator + uuid +"_" + fileName;
             Path savePath = Paths.get(saveName);
             try {
-                uploadFile.transferTo(savePath); //실제 이미지 저장
+//원본 파일 저장
+                uploadFile.transferTo(savePath);
+//섬네일 생성
+                String thumbnailSaveName = uploadPath + File.separator + folderPath + File.separator
+                        +"s_" + uuid +"_" + fileName;
+//섬네일 파일 이름은 중간에 s_로 시작하도록
+                File thumbnailFile = new File(thumbnailSaveName);
+//섬네일 생성
+                Thumbnailator.createThumbnail(savePath.toFile(), thumbnailFile,100,100 );
                 resultDTOList.add(new UploadResultDTO(fileName,uuid,folderPath));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }//end for
+        return new ResponseEntity<>(resultDTOList, HttpStatus.OK);
     }
     private String makeFolder() {
         String str = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
