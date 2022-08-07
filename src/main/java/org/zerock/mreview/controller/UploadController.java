@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.zerock.mreview.dto.UploadResultDTO;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +13,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -21,6 +24,8 @@ public class UploadController {
     private String uploadPath;
     @PostMapping("/uploadAjax")
     public void uploadFile(MultipartFile[] uploadFiles){
+
+        List<UploadResultDTO> resultDTOList = new ArrayList<>();
         for (MultipartFile uploadFile: uploadFiles) {
             if(uploadFile.getContentType().startsWith("image") == false) { //이미지파일만 업로드 가능
                 log.warn("this file is not image type");
@@ -38,7 +43,8 @@ public class UploadController {
             String saveName = uploadPath + File.separator + folderPath + File.separator + uuid +"_" + fileName;
             Path savePath = Paths.get(saveName);
             try {
-                uploadFile.transferTo(savePath);
+                uploadFile.transferTo(savePath); //실제 이미지 저장
+                resultDTOList.add(new UploadResultDTO(fileName,uuid,folderPath));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -54,4 +60,6 @@ public class UploadController {
         }
         return folderPath;
     }
+
+
 }
