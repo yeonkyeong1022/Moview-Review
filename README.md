@@ -49,7 +49,7 @@
 | DELETE | /reviews/영화번호/영화리뷰번호 | 리뷰 삭제 | 리뷰 삭제 |
 
 ## 엔티티 관계도
-
+![Untitled](https://user-images.githubusercontent.com/89283563/183489499-646e1f50-53f4-42de-a75e-e8e43983a277.png)
 
 
 ## Git model
@@ -63,8 +63,14 @@
     - 기능 구현 브랜치
 
 ### Git flow(Git Kraken 활용)
+<img width="344" alt="Untitled (1)" src="https://user-images.githubusercontent.com/89283563/183489602-3e02c60f-51a0-444a-9f4d-2aa2d17750f5.png">
 
 
 ---
 
 ## 프로젝트 구현 화면
+
+![Untitled (2)](https://user-images.githubusercontent.com/89283563/183489631-ae3e88f5-2b02-4e7d-b94e-4afe80e8dc33.png)
+![Untitled (3)](https://user-images.githubusercontent.com/89283563/183489644-524300e4-3821-4e60-9446-638a29933889.png)
+![Untitled (4)](https://user-images.githubusercontent.com/89283563/183489656-17e147bb-41c8-4b47-9d8d-d4a092ab1777.png)
+
